@@ -26,6 +26,7 @@ module Data.TypeNat.Fin (
 import Data.TypeNat.Nat
 import Data.TypeNat.Vect
 
+-- | Finite set datatype.
 data Fin :: Nat -> * where
   FZ :: Fin (S n)
   FS :: Fin k -> Fin (S k)
@@ -41,6 +42,7 @@ ix8 = FS ix7
 ix9 = FS ix8
 ix10 = FS ix9
 
+-- | Safely index a Vect.
 safeIndex :: Vect a n -> Fin n -> a
 safeIndex (VCons a _) FZ = a
 safeIndex (VCons _ v) (FS x) = safeIndex v x
