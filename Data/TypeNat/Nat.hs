@@ -12,13 +12,11 @@
 module Data.TypeNat.Nat (
 
     Nat(..)
-  , IsNat
-  , natRecursion
+  , IsNat(..)
 
-  , LTE
-  , lteInduction
-  , lteRecursion
+  , LTE(..)
 
+  , Zero
   , One
   , Two
   , Three
@@ -34,6 +32,7 @@ module Data.TypeNat.Nat (
 
 data Nat = Z | S Nat
 
+type Zero = Z
 type One = S Z
 type Two = S One
 type Three = S Two
