@@ -1,12 +1,19 @@
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE Rank2Types #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Data.TypeNat.Nat (
 
     Nat(..)
   , IsNat
   , natRecursion
+  , LTE
+  , lteRecursion
 
   , One
   , Two
@@ -44,3 +51,16 @@ instance IsNat Z where
 
 instance IsNat n => IsNat (S n) where
   natRecursion ifS ifZ reduce x = ifS x (natRecursion ifS ifZ reduce (reduce x))
+
+class LTE (n :: Nat) (m :: Nat) where
+  lteRecursion :: (forall k . d k -> d (S k)) -> d n -> d m
+
+instance LTE n n where
+  lteRecursion f x = x
+
+instance LTE n m => LTE n (S m) where
+  lteRecursion :: forall (d :: Nat -> *) . (forall (k :: Nat) . d k -> d (S k)) -> d n -> d (S m)
+  lteRecursion f x =
+      let sub :: d m
+          sub = lteRecursion f x
+      in  lteRecursion f sub
