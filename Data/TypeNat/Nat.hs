@@ -6,13 +6,17 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+-- TBD can we get around incoherent instances!?!
+{-# LANGUAGE IncoherentInstances #-}
 
 module Data.TypeNat.Nat (
 
     Nat(..)
   , IsNat
   , natRecursion
+
   , LTE
+  , lteInduction
   , lteRecursion
 
   , One
@@ -52,15 +56,27 @@ instance IsNat Z where
 instance IsNat n => IsNat (S n) where
   natRecursion ifS ifZ reduce x = ifS x (natRecursion ifS ifZ reduce (reduce x))
 
+-- | Nat @n@ is less than or equal to nat @m@.
+--   Comes with functions to do type-directed computation for Nat-indexed
+--   datatypes.
 class LTE (n :: Nat) (m :: Nat) where
-  lteRecursion :: (forall k . d k -> d (S k)) -> d n -> d m
+  lteInduction :: (forall k . LTE (S k) m => d k -> d (S k)) -> d n -> d m
+  lteRecursion :: (forall k . LTE n k => d (S k) -> d k) -> d m -> d n
 
 instance LTE n n where
+  lteInduction f x = x
   lteRecursion f x = x
 
 instance LTE n m => LTE n (S m) where
-  lteRecursion :: forall (d :: Nat -> *) . (forall (k :: Nat) . d k -> d (S k)) -> d n -> d (S m)
-  lteRecursion f x =
+
+  lteInduction
+    :: forall (d :: Nat -> *) .
+       (forall (k :: Nat) . LTE (S k) (S m) => d k -> d (S k))
+    -> d n
+    -> d (S m)
+  lteInduction f x =
       let sub :: d m
-          sub = lteRecursion f x
-      in  lteRecursion f sub
+          sub = lteInduction f x
+      in  f sub
+
+  lteRecursion f x = lteRecursion f (f x)
