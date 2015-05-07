@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                TypeNat
-version:             0.2.0.0
+version:             0.2.1.0
 synopsis:            Some Nat-indexed types for GHC
 -- description:         
 homepage:            https://github.com/avieth/TypeNat
