@@ -4,7 +4,6 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 -- TBD can we get around incoherent instances!?!
 {-# LANGUAGE IncoherentInstances #-}
@@ -68,14 +67,9 @@ instance LTE n n where
 
 instance LTE n m => LTE n (S m) where
 
-  lteInduction
-    :: forall (d :: Nat -> *) .
-       (forall (k :: Nat) . LTE (S k) (S m) => d k -> d (S k))
-    -> d n
-    -> d (S m)
-  lteInduction f x =
-      let sub :: d m
-          sub = lteInduction f x
-      in  f sub
+  -- Use the LTE n m instance to get  lteInduction f x :: d m
+  -- With this in hand, we can apply f again because
+  -- LTE (S m) (S m) is true so that f :: d m -> d (S m) and we're there!
+  lteInduction f x = f (lteInduction f x)
 
   lteRecursion f x = lteRecursion f (f x)
