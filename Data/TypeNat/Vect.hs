@@ -1,6 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE StandaloneDeriving #-}
 
 module Data.TypeNat.Vect (
 
@@ -22,6 +23,9 @@ import Data.TypeNat.Nat
 data Vect :: * -> Nat -> * where
   VNil :: Vect a Z
   VCons :: a -> Vect a n -> Vect a (S n)
+
+deriving instance Eq t => Eq (Vect t n)
+deriving instance Show t => Show (Vect t n)
 
 -- | A kind of fmap for Vect.
 vectMap :: (a -> b) -> Vect a n -> Vect b n

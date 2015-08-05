@@ -36,6 +36,17 @@ import GHC.Exts (Constraint)
 
 data Nat = Z | S Nat
 
+instance Eq Nat where
+    Z == Z = True
+    (S n) == (S m) = n == m
+    _ == _ = False
+
+instance Ord Nat where
+    Z `compare` Z = EQ
+    S n `compare` S m = n `compare` m
+    S n `compare` Z = GT
+    Z `compare` S m = LT
+
 type Zero = Z
 type One = S Z
 type Two = S One
