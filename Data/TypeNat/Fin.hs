@@ -18,6 +18,7 @@ module Data.TypeNat.Fin (
   , ix10
 
   , safeIndex
+  , safeUpdate
 
   , module Data.TypeNat.Nat
 
@@ -43,6 +44,10 @@ ix9 = FS ix8
 ix10 = FS ix9
 
 -- | Safely index a Vect.
-safeIndex :: Vect a n -> Fin n -> a
-safeIndex (VCons a _) FZ = a
-safeIndex (VCons _ v) (FS x) = safeIndex v x
+safeIndex :: Fin n -> Vect n a -> a
+safeIndex FZ (VCons a _) = a
+safeIndex (FS x) (VCons _ v) = safeIndex x v
+
+safeUpdate :: Fin n -> (a -> a) -> Vect n a -> Vect n a
+safeUpdate FZ f (VCons x rest) = VCons (f x) rest
+safeUpdate (FS fs) f (VCons x rest) = VCons x (safeUpdate fs f rest)
