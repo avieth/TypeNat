@@ -48,6 +48,7 @@ safeIndex :: Fin n -> Vect n a -> a
 safeIndex FZ (VCons a _) = a
 safeIndex (FS x) (VCons _ v) = safeIndex x v
 
+-- | Safely update a Vect.
 safeUpdate :: Fin n -> (a -> a) -> Vect n a -> Vect n a
 safeUpdate FZ f (VCons x rest) = VCons (f x) rest
 safeUpdate (FS fs) f (VCons x rest) = VCons x (safeUpdate fs f rest)

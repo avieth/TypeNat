@@ -34,6 +34,7 @@ module Data.TypeNat.Nat (
 import Data.Proxy
 import GHC.Exts (Constraint)
 
+-- | Natural numbers
 data Nat = Z | S Nat
 
 instance Eq Nat where
