@@ -30,6 +30,16 @@ deriving instance Show a => Show (Vect n a)
 instance Functor (Vect n) where
     fmap = vectMap
 
+instance Foldable (Vect n) where
+    foldr f b vect = case vect of
+        VNil -> b
+        VCons x rest -> f x (foldr f b rest)
+
+instance Traversable (Vect n) where
+    traverse f vect = case vect of
+        VNil -> pure VNil
+        VCons x rest -> VCons <$> f x <*> traverse f rest
+
 -- | A kind of fmap for Vect.
 vectMap :: (a -> b) -> Vect n a -> Vect n b
 vectMap f vect = case vect of
@@ -42,6 +52,7 @@ vectSnoc x vect = case vect of
   VNil -> VCons x VNil
   VCons y v -> VCons y (vectSnoc x v)
 
+-- | Show a Vect.
 showVect :: Show a => Vect l a -> String
 showVect VNil = "VNil"
 showVect (VCons x xs) = show x ++ " , " ++ showVect xs
